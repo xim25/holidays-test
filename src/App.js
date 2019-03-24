@@ -1,11 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
-// import Moment from 'moment';
-// import { extendMoment } from 'moment-range';
+import moment from 'moment';
 import { getHolidays } from './services/services';
-
-
-// const moment = extendMoment(Moment);
 
 class App extends Component {
   constructor(){
@@ -13,41 +9,57 @@ class App extends Component {
     this.state = {
       country: ["MX", "US"],
       year: [2019, 2020, 2021],
-      months: ["Enero", 
-               "Febrero", 
-               "Marzo", 
-               "Abril", 
-               "Mayo", 
-               "Junio", 
-               "Julio", 
-               "Agosto", 
-               "Septiembre", 
-               "Octubre", 
-               "Noviembre", 
-               "Diciembre"],
+      months: ["January", 
+               "February", 
+               "March", 
+               "April", 
+               "May", 
+               "June", 
+               "July", 
+               "August", 
+               "September", 
+               "October", 
+               "November", 
+               "December"],
       holidays: [],
       data: {}
     }
   }  
   
+ componentWillMount(){
+   let {data} = this.state;
+   let date = new Date();
+   let months = moment(date).format('MMMM');
+   let year = moment(date).format('YYYY');
+   data = {
+     year: year,
+     months: months,
+     country: 'MX'
+   }
+   this.setState({data})
+ }
 
-  displayHolidays = () => {
-    let { holidays } = this.state;
-    getHolidays()
+  displayHolidays = (data) => {
+    let {holidays} = this.state;
+    getHolidays(data)
     .then(res => {
-    holidays=res;
+    holidays=res.data;
     this.setState({holidays})
   })
     .catch(err => {
-    console.log(err)
+    console.log(err);
   })
+  console.log(data);
   }
 
   handleChange = (e, name) => {
-    // let {data} = this.state;
-    // data[name]=value
-    // this.setState({data})
-    console.log(e.target);
+    let {data} = this.state;
+    if(name === 'year' || name === 'months'){
+      this.displayHolidays(data)
+    }
+    data[name]=e.target.value;
+    this.setState({data})
+    console.log(data);
   }
   
 
@@ -55,6 +67,8 @@ class App extends Component {
 
 
   render() {
+    let {holidays, data} =this.state;
+    //console.log(holidays.filter(item => data.months === moment(item.date).format('MMMM')))
     return (
       <div className="App">
           <header className="App-header">
@@ -69,25 +83,25 @@ class App extends Component {
                   <option defaultValue>Año</option>
                   {this.state.year.map((item,index) => <option key={index} index={index} item={item}>{item}</option>)}
               </select>
-              <select name="month" id="month" onChange={value=>this.handleChange(value,'month')}>
+              <select name="months" id="months" onChange={value=>this.handleChange(value,'months')}>
                   <option defaultValue>Mes</option>
                   {this.state.months.map((item,index) => <option key={index} index={index} item={item}>{item}</option>)} 
               </select>
           </div>
 
-          {/* <table>
+          <table>
             <tbody>
               <tr>
                 <th>Name</th>
                 <th>Date</th>
               </tr>
-              {this.state.holidays.map((item, index) => 
+              {holidays.filter(item => data.months === moment(item.date).format('MMMM')).map((item, index) => 
               <tr key={index} index={index} item={item}>
-                <td>{item.name}</td>
+                <td>{item.localName}</td>
                 <td>{item.date}</td>
               </tr>)}
             </tbody>
-          </table> */}
+          </table>
       </div>
     );
   }

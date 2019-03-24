@@ -1,3 +1,7 @@
+*{
+  box-sizing: border-box;
+}
+
 .App {
   text-align: center;
 }
@@ -11,4 +15,30 @@
   justify-content: center;
   font-size: calc(12px + .5vmin);
   color: #333;
+  margin-bottom: 5vh;
+}
+
+.table-container {
+  margin-top: 5vh; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(12px + .5vmin);
+  color: #333;
+}
+
+th,td{
+  width: 8vw;
+  text-align: justify;
+}
+
+td.name{
+  width: 15vw;
+}
+
+select {
+  width: 100px;
+  height: 20px;
+  margin: 5px;
 }

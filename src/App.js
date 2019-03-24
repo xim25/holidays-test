@@ -51,11 +51,11 @@ class App extends Component {
 
   handleChange = (e, name) => {
     let {data} = this.state;
-    if(name === 'year' || name === 'country'){
-      this.displayHolidays(data)
-    }
     data[name]=e.target.value;
     this.setState({data})
+      if(name === 'year' || name === 'country'){
+        this.displayHolidays(data)
+      }
   }
   
 
@@ -68,7 +68,7 @@ class App extends Component {
     return (
       <div className="App">
           <header className="App-header">
-            <h1>Días Festivos de México & Estados Unidos</h1>
+            <h1>Días Festivos de México y Estados Unidos</h1>
           </header>
           <div>
               <select name="country" id="country" onChange={value=>this.handleChange(value,'country')}>
@@ -85,7 +85,7 @@ class App extends Component {
               </select>
           </div>
 
-          <table>
+          <table className="table-container">
             <tbody>
               <tr>
                 <th>Name</th>
@@ -94,7 +94,7 @@ class App extends Component {
 
               {holidays.filter(item => data.months === undefined || data.months === 'mes' ? item : data.months === moment(item.date).format('MMMM')).map((item, index) => 
               <tr key={index} index={index} item={item}>
-                <td>{item.localName}</td>
+                <td className="name">{item.localName}</td>
                 <td>{item.date}</td>
               </tr>)}
             </tbody>

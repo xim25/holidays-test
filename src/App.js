@@ -29,11 +29,9 @@ class App extends Component {
  componentWillMount(){
    let {data} = this.state;
    let date = new Date();
-   let months = moment(date).format('MMMM');
    let year = moment(date).format('YYYY');
    data = {
      year: year,
-     months: months,
      country: 'MX'
    }
    this.setState({data})
@@ -49,17 +47,15 @@ class App extends Component {
     .catch(err => {
     console.log(err);
   })
-  console.log(data);
   }
 
   handleChange = (e, name) => {
     let {data} = this.state;
-    if(name === 'year' || name === 'months'){
+    if(name === 'year' || name === 'country'){
       this.displayHolidays(data)
     }
     data[name]=e.target.value;
     this.setState({data})
-    console.log(data);
   }
   
 
@@ -95,7 +91,8 @@ class App extends Component {
                 <th>Name</th>
                 <th>Date</th>
               </tr>
-              {holidays.filter(item => data.months === moment(item.date).format('MMMM')).map((item, index) => 
+
+              {holidays.filter(item => data.months === undefined || data.months === 'mes' ? item : data.months === moment(item.date).format('MMMM')).map((item, index) => 
               <tr key={index} index={index} item={item}>
                 <td>{item.localName}</td>
                 <td>{item.date}</td>

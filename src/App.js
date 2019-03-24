@@ -1,44 +1,53 @@
 import React, { Component } from 'react';
 import './App.css';
-import Moment from 'moment';
-import { extendMoment } from 'moment-range';
-import axios from 'axios';
+// import Moment from 'moment';
+// import { extendMoment } from 'moment-range';
+import { getHolidays } from './services/services';
 
-const moment = extendMoment(Moment);
+
+// const moment = extendMoment(Moment);
 
 class App extends Component {
   constructor(){
     super();
     this.state = {
       country: ["MX", "US"],
-      year: [],
-      months: [],
-      holidays: []
+      year: [2019, 2020, 2021],
+      months: ["Enero", 
+               "Febrero", 
+               "Marzo", 
+               "Abril", 
+               "Mayo", 
+               "Junio", 
+               "Julio", 
+               "Agosto", 
+               "Septiembre", 
+               "Octubre", 
+               "Noviembre", 
+               "Diciembre"],
+      holidays: [],
+      data: {}
     }
+  }  
+  
+
+  displayHolidays = () => {
+    let { holidays } = this.state;
+    getHolidays()
+    .then(res => {
+    holidays=res;
+    this.setState({holidays})
+  })
+    .catch(err => {
+    console.log(err)
+  })
   }
 
-  getYears(){
-    let fromDate = moment().year(2019);
-    let toDate = moment().add(10, 'years');
-    let range = moment().range(fromDate, toDate);
-    let years = [];
-    
-    years.push(range);
-    this.setState({year: years});
-  }
-
-
-  componentWillMount(){
-    let {year, country, holidays} = this.state;
-
-    axios.get(`https://date.nager.at/api/v2/publicholidays/${year}/${country}`)
-      .then(res => {
-        holidays=res.holidays;
-        this.setState({holidays})
-      })
-      .catch(err => {
-        console.log(err)
-      })
+  handleChange = (e, name) => {
+    // let {data} = this.state;
+    // data[name]=value
+    // this.setState({data})
+    console.log(e.target);
   }
   
 
@@ -49,23 +58,24 @@ class App extends Component {
     return (
       <div className="App">
           <header className="App-header">
-            <h1>Holidays in Mexico & USA</h1>
+            <h1>Días Festivos de México & Estados Unidos</h1>
           </header>
           <div>
-              <select name="Country" id="country">
-                  <option disabled selected value>Select a country</option>
+              <select name="country" id="country" onChange={value=>this.handleChange(value,'country')}>
+                  <option defaultValue>País</option>
                   {this.state.country.map((item,index) => <option key={index} index={index} item={item}>{item}</option>)}
               </select>
-              <select name="Year" id="year">
-                  <option disabled selected value>Select a Year</option>
+              <select name="year" id="year" onChange={value=>this.handleChange(value,'year')}>
+                  <option defaultValue>Año</option>
                   {this.state.year.map((item,index) => <option key={index} index={index} item={item}>{item}</option>)}
               </select>
-              <select name="Month" id="month">
-                  <option disabled selected value>Select a Month</option>
+              <select name="month" id="month" onChange={value=>this.handleChange(value,'month')}>
+                  <option defaultValue>Mes</option>
                   {this.state.months.map((item,index) => <option key={index} index={index} item={item}>{item}</option>)} 
               </select>
           </div>
-          <table>
+
+          {/* <table>
             <tbody>
               <tr>
                 <th>Name</th>
@@ -77,8 +87,7 @@ class App extends Component {
                 <td>{item.date}</td>
               </tr>)}
             </tbody>
-          </table>
-
+          </table> */}
       </div>
     );
   }
